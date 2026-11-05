@@ -1,0 +1,46 @@
+{
+  "family": "fotoreportcu-bot",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "fotoreportcu-bot",
+      "image": "<ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/fotoreportcu-bot:latest",
+      "essential": true,
+      "environment": [
+        { "name": "USE_REDIS", "value": "0" },
+        { "name": "WORK_DIR", "value": "/data/work" },
+        { "name": "OUT_DIR", "value": "/data/out" }
+      ],
+      "secrets": [
+        {
+          "name": "BOT_TOKEN",
+          "valueFrom": "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/fotoreportcu-bot/BOT_TOKEN"
+        }
+      ],
+      "healthCheck": {
+        "command": ["CMD-SHELL", "curl -fsS http://127.0.0.1:3000/health || exit 1"],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 30
+      },
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/fotoreportcu-bot",
+          "awslogs-region": "<REGION>",
+          "awslogs-stream-prefix": "bot",
+          "awslogs-create-group": "true"
+        }
+      }
+    }
+  ]
+}
