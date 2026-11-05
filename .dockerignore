@@ -1,0 +1,17 @@
+.git/
+.github/
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+node_modules/
+work/
+out/
+data/
+*.log
+*.zip
+android/.buildozer/
+android/bin/

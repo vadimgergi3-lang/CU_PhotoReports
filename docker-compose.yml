@@ -1,0 +1,19 @@
+# Локальный / EC2 запуск через Docker Compose.
+#   docker compose up -d --build
+# Токен берётся из файла .env (см. .env.example).
+services:
+  bot:
+    build: .
+    image: fotoreportcu-bot:latest
+    container_name: fotoreportcu-bot
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - botdata:/data
+    # Для polling входящие порты НЕ нужны (бот сам ходит в Telegram).
+    # Откройте порт только если нужен внешний health-check:
+    # ports:
+    #   - "3000:3000"
+
+volumes:
+  botdata:
